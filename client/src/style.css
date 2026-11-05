@@ -1,0 +1,20 @@
+:root{--bg:#eaf2f1;--ink:#12302f;--pri:#0b5d5e;--acc:#f2b705;--mut:#5d7473;--card:#fff;--err:#b42318}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 "Trebuchet MS",system-ui,sans-serif}
+main{max-width:520px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:30px;line-height:1.1;margin:8px 0 6px;font-weight:800}h2{font-size:22px;margin:4px 0 14px}h3{margin:0 0 6px}
+p{margin:0 0 14px}.mut{color:var(--mut);font-size:15px}
+label{display:block;font-weight:700;margin:14px 0 6px}
+input[type=text],input[type=password],textarea{width:100%;font:inherit;padding:14px;border:2px solid #b8cfcd;border-radius:10px;background:#fff}
+input:focus,textarea:focus,button:focus-visible{outline:3px solid var(--acc);outline-offset:1px}
+.chk{display:flex;gap:12px;align-items:flex-start;font-weight:400;margin:12px 0}.chk input{width:26px;height:26px;flex:none;margin-top:2px}
+button{font:inherit;font-weight:700;min-height:54px;width:100%;border:0;border-radius:12px;padding:12px 16px;background:var(--pri);color:#fff;margin-top:12px;cursor:pointer}
+button.sec{background:transparent;color:var(--pri);border:2px solid var(--pri)}button:disabled{opacity:.5}
+.op{display:block;text-align:left;background:var(--card);color:var(--ink);border:2px solid #b8cfcd;margin-top:10px}
+.op.on{border-color:var(--pri);background:var(--acc);color:#2a2000}
+.bar{height:8px;background:#c9dcda;border-radius:8px;margin-bottom:18px;overflow:hidden}.bar i{display:block;height:100%;background:var(--pri);transition:width .25s}
+.err{background:#fde8e6;color:var(--err);padding:12px;border-radius:10px;margin-top:12px;font-weight:700}
+.aviso{border-left:6px solid var(--acc);background:#fff8dc;padding:12px 14px;border-radius:6px;margin:14px 0;font-weight:700}
+.sess{background:var(--card);border-radius:14px;padding:16px;margin:12px 0}.sess ul{margin:8px 0;padding-left:20px}.sess li{margin:6px 0}
+.dia{display:inline-block;background:var(--pri);color:#fff;border-radius:20px;padding:2px 12px;font-size:14px;margin-bottom:8px}
+.stars{display:flex;gap:8px}.stars button{margin:0;font-size:24px;background:var(--card);color:var(--ink);border:2px solid #b8cfcd}.stars .on{background:var(--acc);border-color:var(--acc)}
+.ok{text-align:center;padding-top:40px}
