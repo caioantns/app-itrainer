@@ -64,6 +64,32 @@ app.get('/qr',h(async(req,res)=>{
  const url=process.env.PUBLIC_URL||`${req.headers['x-forwarded-proto']||req.protocol}://${req.get('host')}`;
  res.send(`<meta name=viewport content="width=device-width,initial-scale=1"><body style="font-family:sans-serif;text-align:center;padding:24px"><h1>iTrainer</h1><p>Escaneie para receber seu plano de treino grátis</p><img width=320 src="${await QR.toDataURL(url,{margin:2,width:640})}"><p>${url}</p>`);
 }));
+app.get('/relatorio',h(async(req,res)=>{
+ if(!process.env.ADMIN_KEY)return bad(res,'ADMIN_KEY não configurada.',503);
+ if(req.query.chave!==process.env.ADMIN_KEY)return bad(res,'Acesso negado.',403);
+ const {rows:[m]}=await pool.query(fs.readFileSync(path.join(__dirname,'metricas.sql'),'utf8'));
+ const {rows}=await pool.query(`select p.nome,p.criado_em,p.autoriza_imagem,r.objetivo,r.nivel,a.nota,a.comentario
+  from participantes p left join planos pl on pl.participante_id=p.id left join respostas r on r.id=pl.resposta_id
+  left join avaliacoes a on a.plano_id=pl.id order by p.criado_em`);
+ const e=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+ const dt=d=>new Date(d).toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo'});
+ const meta=b=>b?'<b style="color:#0a7a3d">✔ meta atingida</b>':'<b style="color:#b42318">✘ meta não atingida</b>';
+ const pct=m.pct_notas_4_5??0;
+ res.send(`<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Relatório iTrainer</title>
+<style>body{font:15px/1.4 system-ui,sans-serif;margin:24px;color:#111}h1{margin:0}.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:16px 0}
+.c{border:1px solid #bbb;border-radius:8px;padding:10px}.c span{display:block;font-size:28px;font-weight:800}table{border-collapse:collapse;width:100%}th,td{border:1px solid #bbb;padding:6px 8px;text-align:left}th{background:#eee}
+@media print{body{margin:8mm}}</style>
+<h1>iTrainer – Relatório da ação</h1><p>Práticas Extensionistas Integradoras VI · Universidade de Vassouras, Campus Maricá<br>Gerado em ${dt(new Date())}</p>
+<div class=g>
+<div class=c>Participantes<span>${m.participantes}</span>${meta(m.participantes>=6)} (mín. 6)</div>
+<div class=c>Planos gerados<span>${m.planos_gerados}</span>${meta(m.planos_gerados>=6)} (mín. 6)</div>
+<div class=c>Notas 4 ou 5<span>${pct}%</span>${meta(pct>=80)} (mín. 80%)</div>
+<div class=c>Aceites LGPD<span>${m.aceites_lgpd}</span></div>
+<div class=c>Avaliações recebidas<span>${m.avaliacoes}</span></div>
+<div class=c>Nota média<span>${m.media_nota??'—'}</span></div></div>
+<table><tr><th>#</th><th>Nome</th><th>Data e hora</th><th>LGPD</th><th>Imagem</th><th>Objetivo</th><th>Nível</th><th>Nota</th><th>Comentário</th></tr>
+${rows.map((r,i)=>`<tr><td>${i+1}</td><td>${e(r.nome)}</td><td>${dt(r.criado_em)}</td><td>Sim</td><td>${r.autoriza_imagem?'Autorizou':'Não'}</td><td>${e(r.objetivo)}</td><td>${e(r.nivel)}</td><td>${e(r.nota??'—')}</td><td>${e(r.comentario)}</td></tr>`).join('')}</table>`);
+}));
 const dist=path.join(__dirname,'..','client','dist');
 app.use(express.static(dist));
 app.get(/^\/(?!api).*/,(req,res)=>res.sendFile(path.join(dist,'index.html')));

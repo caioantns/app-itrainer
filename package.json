@@ -1,1 +1,10 @@
-{"name":"itrainer","private":true,"scripts":{"build":"npm --prefix server install && npm --prefix client install && npm --prefix client run build","start":"node server/index.js","test":"npm --prefix server test"}}
+{
+  "name": "itrainer",
+  "private": true,
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "build": "npm --prefix server install && npm --prefix client install && npm --prefix client run build",
+    "start": "node server/index.js",
+    "test": "npm --prefix server test"
+  }
+}
